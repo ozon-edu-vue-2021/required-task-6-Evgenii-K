@@ -1,6 +1,10 @@
 <template>
   <div>
-    {{ usersComment[filterProp].filter }}
+    <base-radio
+      :items="staticPagingTitle"
+      :picked="staticPaging"
+      @picked="updatePaging"
+    />
     <table class="table">
       <cus-table-head 
         @toggle="toggleSort"
@@ -12,6 +16,7 @@
     </table>
     <div
       class="pagination__wrapper"
+      v-if="staticPaging"
     >
       <button
         v-show="currentPage > 1"
@@ -33,18 +38,25 @@
         Вперёд
       </button>
     </div>
+    <div
+      v-else
+      class="scroll"
+      v-detect-viewport="value"
+    />
   </div>
 </template>
 
 <script>
 import CusTableBody from './cus-table-body.vue'
 import CusTableHead from './cus-table-head.vue'
-import { orderBy } from 'lodash/collection';
+import BaseRadio from '../BaseComponents/BaseRadio'
+import { orderBy } from 'lodash/collection'
 
 export default {
   components: {
     CusTableBody,
     CusTableHead,
+    BaseRadio,
   },
   name: 'Table',
   data() {
@@ -66,17 +78,41 @@ export default {
           sortDir: 'asc',
         },
       },
-      filterProp: 'name',
+      filterProp: 'id',
       sortProp: 'id',
+      staticPaging: true,
+      staticPagingTitle: [
+        {
+          name: true,
+          title: 'Пагинация'
+        }, {
+          name: false,
+          title: 'Бесконечный скролл'
+        },
+      ],
+      value: {
+        callback: this.infGetPage
+      },
     }
   },
   watch: {
     filtered() {
-      this.currentPage = 1
-    }
+      if(this.staticPaging) this.currentPage = 1
+    },
   },
   methods: {
+    updatePaging(value) {
+      this.staticPaging = value
+      this.currentPage = 1
+      if(value) {
+        this.getComments()
+        return
+      }
+      this.blockingPromise = this.getPage(1)
+    },
     toggleSort(prop) {
+      if(!this.staticPaging) return
+
       this.currentPage = 1
 
       if (this.sortProp === prop) {
@@ -91,23 +127,44 @@ export default {
     async getComments() {
       try {
         const response = await fetch('https://jsonplaceholder.typicode.com/comments')
-
         if (response.status !== 200) return console.log('Ошибка сервера');
-        
         this.comments = await response.json()
-
-        console.log(this.comments)
-
       } catch (error) {
         console.log(error)
       }
     },
+    async getPage(number) {
+      try {
+        const response = await fetch(`https://jsonplaceholder.typicode.com/comments?postId=${number}`);
+        this.comments = await response.json();
+        this.currentPage = number;
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async infGetPage() {
+      try {
+        this.blockingPromise && await this.blockingPromise;
+        const response = await fetch(`https://jsonplaceholder.typicode.com/comments?postId=${this.currentPage + 1}`);
+        const newComments = await response.json();
+        this.comments = [...this.comments, ...newComments];
+        this.currentPage++;
+      } catch (error) {
+        console.log(error)
+      }
+    }
   },
-  mounted() {
-    this.getComments()
+  created() {
+    if (this.staticPaging) {
+      this.getComments()
+      return
+    }
+    this.blockingPromise = this.getPage(1)
   },
   computed: {
     pages() {
+      if (!this.staticPaging) return
+
       const pagesList = Math.ceil(this.filtered.length / this.maxItemsOnPage)
       if (this.currentPage <= 3) {
         if (pagesList < 5) return pagesList
@@ -133,9 +190,11 @@ export default {
       ]
     },
     startItemOnPage() {
+      if(!this.staticPaging) return 0
       return (this.currentPage - 1) * this.maxItemsOnPage
     },
     endItemOnPage() {
+      if(!this.staticPaging) return this.comments.length
       return this.currentPage * this.maxItemsOnPage
     },
     itemsOnPage() {
@@ -148,7 +207,8 @@ export default {
     filtered() {
       return this.comments.filter(comment => {
         for (let filterProp in this.usersComment) {
-          if (comment[filterProp].toString().toLowerCase().indexOf(this.usersComment[filterProp].filter.toLowerCase()) < 0) {
+
+          if (comment[filterProp]?.toString().toLowerCase().indexOf(this.usersComment[filterProp].filter.toLowerCase()) < 0) {
             return false;
           }
         }
@@ -178,5 +238,10 @@ export default {
 }
 .pagination {
   padding: 12px;
+}
+.scroll {
+  width: 100%;
+  height: 32px;
+  background: center center no-repeat url('../../assets/dost-loader.svg');
 }
 </style>

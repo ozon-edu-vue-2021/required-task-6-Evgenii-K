@@ -4,8 +4,8 @@
       v-for="item in items"
       :key="item.name"
     >
-      <input class="radio-button" type="radio" :id="item.name" v-model="pickedModel" :value="item.name">
-      <label :for="item.name">{{item.title}}</label>
+      <input class="radio-button" type="radio" :id="item.title" v-model="pickedModel" :value="item.name">
+      <label :for="item.title">{{item.title}}</label>
     </div>
   </div>
 </template>
@@ -16,11 +16,11 @@ export default {
   props: {
     items: {
       type: Array,
-      default: () => ({})
+      default: () => []
     },
     picked: {
-      type: String,
-      default: ''
+      type: Boolean,
+      default: true
     }
   },
   data() {

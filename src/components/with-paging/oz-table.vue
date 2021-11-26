@@ -1,6 +1,6 @@
 <script lang="jsx">
 import OzTablePaginator from './oz-table-paginator';
-import DotsLoaderIcon from './dost-loader.svg';
+import DotsLoaderIcon from './dost-loader.svg'; 
 
 export default {
   name: 'oz-table',

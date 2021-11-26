@@ -22,40 +22,6 @@ export default {
       default: () => [],
     }
   },
-  // data() {
-  //   return {
-  //     slots: []
-  //   }
-  // },
-  // created() {
-  //   this.slots = this.$slots.default.
-  //     map(post => post = {...post.data.attrs, scopedSlots: post.data.scopedSlots})
-  // },
-  // methods: {
-  //   renderColumns(row, slots) {
-  //     return slots.map((column) => {
-  //       return <td key={column.prop}>{column.scopedSlots && column.scopedSlots.body ? column.scopedSlots.body({ row }) : row[column.prop]}</td>
-  //     });
-  //   },
-
-  // },
-  // computed: {
-  //   renderRows() {
-  //     return this.comments.slice(0, 3).map((row, index) => {
-  //       return <tr key={row.id || index}>{...this.renderColumns(row, this.slots)}</tr>;
-  //     })
-  //   },
-  //   renderBlock(block) {
-  //     console.log(block);
-  //     console.log(this.$createElement('tbody', block));
-  //     return this.$createElement('tbody', block)
-  //   }
-  // },
-  // watch: {
-  //   renderRows() {
-  //     this.renderBlock(this.renderRows)
-  //   }
-  // }
 }
 </script>
 
