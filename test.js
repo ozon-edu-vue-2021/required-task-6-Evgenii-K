@@ -25,4 +25,21 @@ function sortedCats() {
   }).filter(com => com)
 }
 
-console.log(sortedCats());
+// console.log(sortedCats());
+
+const usersComment = {
+  id: {
+    filter: '',
+    sortDir: 'asc',
+  },
+  name: {
+    filter: '',
+    sortDir: 'asc',
+  },
+  email: {
+    filter: '',
+    sortDir: 'asc',
+  },
+}
+
+console.log(Object.values(usersComment).map(column => column.sortDir));

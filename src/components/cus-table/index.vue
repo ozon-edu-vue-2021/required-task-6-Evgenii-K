@@ -1,12 +1,12 @@
 <template>
   <div>
-    {{ filters[filterProp] }}
+    {{ usersComment[filterProp].filter }}
     <table class="table">
       <cus-table-head 
         @toggle="toggleSort"
         @filterProp="setFilterProp"
-        :filterText="filters[filterProp]"
-        v-model="filters[filterProp]"
+        :filterText="usersComment[filterProp].filter"
+        v-model="usersComment[filterProp].filter"
       />
       <cus-table-body :comments="itemsOnPage"/>
     </table>
@@ -27,7 +27,7 @@
         {{page}}
       </div>
       <button
-        v-show="filteredCats.length > endItemOnPage"
+        v-show="filtered.length > endItemOnPage"
         @click="currentPage++"
       >
         Вперёд
@@ -52,27 +52,38 @@ export default {
       comments: [],
       maxItemsOnPage: 10,
       currentPage: 1,
-      filters: {
-        id: '',
-        name: '',
-        email: 'wil',
+      usersComment: {
+        id: {
+          filter: '',
+          sortDir: 'asc',
+        },
+        name: {
+          filter: '',
+          sortDir: 'asc',
+        },
+        email: {
+          filter: '',
+          sortDir: 'asc',
+        },
       },
-      filterText: '',
       filterProp: 'name',
-      filterName: 'name',
-      filterEmail: '',
-      filterIdMin: 25,
-      filterIdMax: this.comments?.length | 0,
-      currentSortDir:'asc',
-      currentSort:'',
+      sortProp: 'id',
+    }
+  },
+  watch: {
+    filtered() {
+      this.currentPage = 1
     }
   },
   methods: {
     toggleSort(prop) {
-      if(prop === this.currentSort) {
-        this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc';
+      this.currentPage = 1
+
+      if (this.sortProp === prop) {
+        this.usersComment[prop].sortDir = this.usersComment[prop].sortDir === 'asc' ? 'desc' : 'asc';
       }
-      this.currentSort = prop;
+
+      this.sortProp = prop
     },
     setFilterProp(name) {
       this.filterProp = name
@@ -97,7 +108,7 @@ export default {
   },
   computed: {
     pages() {
-      const pagesList = Math.ceil(this.filteredCats.length / this.maxItemsOnPage)
+      const pagesList = Math.ceil(this.filtered.length / this.maxItemsOnPage)
       if (this.currentPage <= 3) {
         if (pagesList < 5) return pagesList
         return 5
@@ -128,29 +139,22 @@ export default {
       return this.currentPage * this.maxItemsOnPage
     },
     itemsOnPage() {
-      let res;
+      let res
 
-      res = orderBy(this.filteredCats, [this.currentSort], [this.currentSortDir]);
+      res = orderBy(this.filtered, this.sortProp, this.usersComment[this.sortProp].sortDir);
 
-      return res
-        .slice(this.startItemOnPage, this.endItemOnPage)
+      return res.slice(this.startItemOnPage, this.endItemOnPage)
     },
-    filteredCats() {
+    filtered() {
       return this.comments.filter(comment => {
-        // const prop = comment[this.filterProp].toLowerCase()
-        // const search = this.filters[this.filterProp].toLowerCase()
-        for (let filterProp in this.filters) {
-          if (comment[filterProp].toString().toLowerCase().indexOf(this.filters[filterProp].toLowerCase()) < 0) {
+        for (let filterProp in this.usersComment) {
+          if (comment[filterProp].toString().toLowerCase().indexOf(this.usersComment[filterProp].filter.toLowerCase()) < 0) {
             return false;
           }
-          // if (comment[filterProp] === undefined || comment[filterProp] != filter[key])
-            
         }
         return true;
-        // return prop.indexOf(search) >= 0;
       })
     },
-
   },
 }
 </script>
