@@ -1,8 +1,7 @@
 <template>
   <div>
-    <base-radio
-      :items="staticPagingTitle"
-      :picked="staticPaging"
+    <radio
+      :staticPaging="staticPaging"
       @picked="updatePaging"
     />
     <table class="table">
@@ -14,30 +13,13 @@
       />
       <cus-table-body :comments="itemsOnPage"/>
     </table>
-    <div
-      class="pagination__wrapper"
+    <pagination
       v-if="staticPaging"
-    >
-      <button
-        v-show="currentPage > 1"
-        @click="currentPage--"
-      >
-        Назад
-      </button>
-      <div 
-        class="pagination"
-        v-for="page in pages"
-        :key="page"
-      >
-        {{page}}
-      </div>
-      <button
-        v-show="filtered.length > endItemOnPage"
-        @click="currentPage++"
-      >
-        Вперёд
-      </button>
-    </div>
+      :currentPage="currentPage"
+      :showNext="filtered.length > endItemOnPage"
+      :filteredLength="filtered.length"
+      @click="onPaginationClick"
+    />
     <div
       v-else
       class="scroll"
@@ -49,14 +31,16 @@
 <script>
 import CusTableBody from './cus-table-body.vue'
 import CusTableHead from './cus-table-head.vue'
-import BaseRadio from '../BaseComponents/BaseRadio'
+import Radio from './cus-table-radio-box'
+import Pagination from './cus-table-pagination'
 import { orderBy } from 'lodash/collection'
 
 export default {
   components: {
     CusTableBody,
     CusTableHead,
-    BaseRadio,
+    Radio,
+    Pagination,
   },
   name: 'Table',
   data() {
@@ -81,15 +65,6 @@ export default {
       filterProp: 'id',
       sortProp: 'id',
       staticPaging: true,
-      staticPagingTitle: [
-        {
-          name: true,
-          title: 'Пагинация'
-        }, {
-          name: false,
-          title: 'Бесконечный скролл'
-        },
-      ],
       value: {
         callback: this.infGetPage
       },
@@ -101,6 +76,9 @@ export default {
     },
   },
   methods: {
+    onPaginationClick(value) {
+      this.currentPage = value
+    },
     updatePaging(value) {
       this.staticPaging = value
       this.currentPage = 1
@@ -162,33 +140,6 @@ export default {
     this.blockingPromise = this.getPage(1)
   },
   computed: {
-    pages() {
-      if (!this.staticPaging) return
-
-      const pagesList = Math.ceil(this.filtered.length / this.maxItemsOnPage)
-      if (this.currentPage <= 3) {
-        if (pagesList < 5) return pagesList
-        return 5
-      }
-  
-      if (this.currentPage >= pagesList - 2) {
-        return [
-          pagesList - 4,
-          pagesList - 3,
-          pagesList - 2,
-          pagesList - 1,
-          pagesList
-        ];
-      }
-
-      return [
-        this.currentPage - 2,
-        this.currentPage - 1,
-        this.currentPage,
-        this.currentPage + 1,
-        this.currentPage + 2
-      ]
-    },
     startItemOnPage() {
       if(!this.staticPaging) return 0
       return (this.currentPage - 1) * this.maxItemsOnPage
@@ -199,15 +150,12 @@ export default {
     },
     itemsOnPage() {
       let res
-
       res = orderBy(this.filtered, this.sortProp, this.usersComment[this.sortProp].sortDir);
-
       return res.slice(this.startItemOnPage, this.endItemOnPage)
     },
     filtered() {
       return this.comments.filter(comment => {
         for (let filterProp in this.usersComment) {
-
           if (comment[filterProp]?.toString().toLowerCase().indexOf(this.usersComment[filterProp].filter.toLowerCase()) < 0) {
             return false;
           }
@@ -230,14 +178,6 @@ export default {
 	text-align: left;
 	padding: 10px 15px;
 	background: #e7f0fd;
-}
-.pagination__wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 400px;
-}
-.pagination {
-  padding: 12px;
 }
 .scroll {
   width: 100%;

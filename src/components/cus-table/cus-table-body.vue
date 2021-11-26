@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: 'Custom-table-body',
+  name: 'Table-body',
   props: {
     comments: {
       type: Array,
