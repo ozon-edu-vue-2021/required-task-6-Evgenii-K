@@ -1,30 +1,38 @@
 <template>
-  <div
-    class="pagination__wrapper"
-  >
-    <button
+  <div class="pagination__wrapper">
+    <font-awesome-icon
+      class="pagination__icon--angle"
+      icon="angle-double-left"
+      v-show="currentPage > 1"
+      @click="$emit('click', 1)"
+    />
+    <font-awesome-icon
+      class="pagination__icon--angle"
+      icon="angle-left"
       v-show="currentPage > 1"
       @click="$emit('click', value = currentPage - 1)"
-    >
-      Назад
-    </button>
-    <div 
-      class="pagination"
+    />
+    <div
       v-for="page in pages"
       :key="page"
+      class="pagination__number"
+      :class="page === currentPage ? 'pagination__active' : ''"
+      @click="$emit('click', page)"
     >
-      <p
-        class="pagination__number"
-        :class="page === currentPage ? 'pagination__active' : ''"
-        @click="$emit('click', page)"
-      >{{page}}</p>
+      {{page}}
     </div>
-    <button
+    <font-awesome-icon
+      class="pagination__icon--angle"
+      icon="angle-right"
       v-show="showNext"
       @click="$emit('click', value = currentPage + 1)"
-    >
-      Вперёд
-    </button>
+    />
+    <font-awesome-icon
+      class="pagination__icon--angle"
+      icon="angle-double-right"
+      v-show="showNext"
+      @click="$emit('click', pagesList)"
+    />
   </div>
 </template>
 
@@ -54,22 +62,24 @@ export default {
     }
   },
   computed: {
+    pagesList() {
+      return Math.ceil(this.filteredLength / this.maxItemsOnPage)
+    },
     pages() {
       if (this.staticPaging) return
 
-      const pagesList = Math.ceil(this.filteredLength / this.maxItemsOnPage)
       if (this.currentPage <= 3) {
-        if (pagesList < 5) return pagesList
+        if (this.pagesList < 5) return this.pagesList
         return 5
       }
   
-      if (this.currentPage >= pagesList - 2) {
+      if (this.currentPage >= this.pagesList - 2) {
         return [
-          pagesList - 4,
-          pagesList - 3,
-          pagesList - 2,
-          pagesList - 1,
-          pagesList
+          this.pagesList - 4,
+          this.pagesList - 3,
+          this.pagesList - 2,
+          this.pagesList - 1,
+          this.pagesList
         ];
       }
 
@@ -88,19 +98,29 @@ export default {
 <style scoped>
 .pagination__wrapper {
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
-  max-width: 400px;
-}
-.pagination {
-  padding: 12px;
+  width: 100%;
 }
 .pagination__number {
+  font-size: 18px;
+  font-weight: 500;
   cursor: pointer;
+  margin: 0px 12px;
 }
-.pagination__number:hover {
+.pagination__number:hover, .pagination__icon--angle:hover {
   color: #005bff;
 }
 .pagination__active {
   color: #005bff;
+  font-weight: 700;
+}
+.pagination__icon--angle {
+  margin: 0px 12px;
+  color: #2c3e50;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
 }
 </style>

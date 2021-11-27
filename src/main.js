@@ -5,8 +5,15 @@ import {
   faSortAmountUp,
   faSortAmountDown,
   faSort,
+  faSortUp,
+  faSortDown,
   faFilter,
-  faTimes
+  faTimes,
+  faAngleDoubleLeft,
+  faAngleDoubleRight,
+  faAngleLeft,
+  faAngleRight,
+  faRandom,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VTooltipPlugin from 'v-tooltip'
@@ -17,7 +24,8 @@ import 'v-tooltip/dist/v-tooltip.css'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 
-library.add(faSortAmountUp, faSortAmountDown, faSort, faFilter, faTimes);
+library.add(faSortAmountUp, faSortAmountDown, faSort, faSortUp, faSortDown, faFilter, faTimes, 
+  faAngleDoubleLeft, faAngleDoubleRight, faAngleLeft, faAngleRight, faRandom);
 
 Vue.use(VTooltipPlugin);
 Vue.use(VueVirtualScroller)

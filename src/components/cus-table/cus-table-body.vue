@@ -4,10 +4,10 @@
       v-for="(comment, idx) in comments.slice(0, 20)"
       :key="comment.id ? comment.id : idx"
     >
-      <td>{{comment.id}}</td>
-      <td>{{comment.name}}</td>
+      <th scope="row" class="body__id">{{comment.id}}</th>
+      <td>{{maxLengthWord(comment.name, 48)}}</td>
       <td>
-        <a :href="`mailto:${comment.email}`">{{ comment.email }}</a>
+        <a class="body__link" :href="`mailto:${comment.email}`">{{maxLengthWord(comment.email, 24)}}</a>
       </td>
     </tr>
   </tbody>
@@ -22,6 +22,12 @@ export default {
       default: () => [],
     }
   },
+  methods: {
+    maxLengthWord(word, maxLength) {
+      if (word.length < maxLength) return word
+      return word.split('').slice(0, maxLength).join('') + '...'
+    }
+  }
 }
 </script>
 
@@ -32,5 +38,12 @@ export default {
 }
 .tbody tr:nth-child(even){
 	background: #eff3f4;
+}
+.body__id {
+  width: 100px;
+}
+.body__link {
+  color: #005bff;
+  text-decoration: none;
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div>
     <radio
+      class="radio__button"
       :staticPaging="staticPaging"
       @picked="updatePaging"
     />
@@ -10,6 +11,8 @@
         @filterProp="setFilterProp"
         :filterText="usersComment[filterProp].filter"
         v-model="usersComment[filterProp].filter"
+        :usersComment="usersComment"
+        :sortProp="sortProp"
       />
       <cus-table-body :comments="itemsOnPage"/>
     </table>
@@ -23,7 +26,7 @@
     <div
       v-else
       class="scroll"
-      v-detect-viewport="value"
+      v-detect-viewport="{callback: this.infGetPage}"
     />
   </div>
 </template>
@@ -65,14 +68,19 @@ export default {
       filterProp: 'id',
       sortProp: 'id',
       staticPaging: true,
-      value: {
-        callback: this.infGetPage
-      },
     }
   },
   watch: {
     filtered() {
       if(this.staticPaging) this.currentPage = 1
+    },
+    staticPaging() {
+      Object.keys(this.usersComment).forEach(key => {
+        this.usersComment[key].sortDir = 'asc'
+      })
+      this.filterProp = 'id'
+      this.sortProp = 'id'
+      this.currentPage = 1
     },
   },
   methods: {
@@ -80,23 +88,16 @@ export default {
       this.currentPage = value
     },
     updatePaging(value) {
+      this.comments = []
       this.staticPaging = value
-      this.currentPage = 1
-      if(value) {
-        this.getComments()
-        return
-      }
-      this.blockingPromise = this.getPage(1)
+      this.init()
     },
     toggleSort(prop) {
       if(!this.staticPaging) return
-
       this.currentPage = 1
-
       if (this.sortProp === prop) {
         this.usersComment[prop].sortDir = this.usersComment[prop].sortDir === 'asc' ? 'desc' : 'asc';
       }
-
       this.sortProp = prop
     },
     setFilterProp(name) {
@@ -122,7 +123,6 @@ export default {
     },
     async infGetPage() {
       try {
-        this.blockingPromise && await this.blockingPromise;
         const response = await fetch(`https://jsonplaceholder.typicode.com/comments?postId=${this.currentPage + 1}`);
         const newComments = await response.json();
         this.comments = [...this.comments, ...newComments];
@@ -130,14 +130,17 @@ export default {
       } catch (error) {
         console.log(error)
       }
-    }
+    },
+    init() {
+      if (this.staticPaging) {
+        this.getComments()
+        return
+      }
+      this.blockingPromise = this.getPage(1)
+    },
   },
   created() {
-    if (this.staticPaging) {
-      this.getComments()
-      return
-    }
-    this.blockingPromise = this.getPage(1)
+    this.init()
   },
   computed: {
     startItemOnPage() {
@@ -173,15 +176,14 @@ export default {
 	margin-bottom: 20px;
   border-spacing: 0px;
 }
-.table thead th {
-	font-weight: bold;
-	text-align: left;
-	padding: 10px 15px;
-	background: #e7f0fd;
-}
 .scroll {
   width: 100%;
   height: 32px;
   background: center center no-repeat url('../../assets/dost-loader.svg');
+}
+.radio__button {
+  width: 100%;
+  justify-content: center;
+  padding: 24px 0;
 }
 </style>

@@ -42,4 +42,13 @@ const usersComment = {
   },
 }
 
-console.log(Object.values(usersComment).map(column => column.sortDir));
+// console.log(Object.values(usersComment).map(column => column.sortDir));
+
+function maxLengthWord(word) {
+  if (word.length < 50) return word
+
+  return word.split('').slice(0, 50).join('') + '...'
+}
+
+console.log(maxLengthWord('molestiae dolores itaque dicta earum eligendi dolores'));
+

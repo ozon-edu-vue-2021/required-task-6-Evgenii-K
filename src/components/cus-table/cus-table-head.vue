@@ -1,39 +1,55 @@
 <template>
-  <thead>
-    <th
-      v-for="head in headers"
-      :key="head.name"
-      @click="$emit('toggle', head.name)"
-    >
-      <VDropdown
-        :offset="[0, 16]"
-        :autoHide="false"
+  <thead class="thead">
+    <tr>
+      <th
+        scope="col"
+        v-for="head in headers"
+        :key="head.name"
       >
-        <font-awesome-icon
-          class="filterIcon"
-          icon="filter"
-          @click="$emit('filterProp', head.name)"
-        />
+        <div class="head__item">
+          <div 
+            class="head__item--title"
+            @click="$emit('toggle', head.name)"
+          >
+            {{ head.title }}
+            <font-awesome-icon
+              :icon="head.name === sortProp 
+              ? usersComment[head.name].sortDir === 'asc' ? 'sort-down' : 'sort-up'
+              : 'sort'"
+            />
+          </div>
 
-        <template #popper>
-          <p>Фильтр по полю {{head.title}} {{ head.name === 'id' ? '(только цифры)' : ''}}</p>
-          <base-input 
-            :type="head.name === 'id' ? 'number' : 'text'"
-            class="tooltip-content"
-            @input="setFilterText"
-            :value="filterText" 
-            placeholder="Tooltip content" 
-          />
-          <font-awesome-icon
-            icon="times"
-            class="closeIcon"
-            v-close-popper
-          />
-        </template>
-      </VDropdown>
+          <VDropdown
+            :offset="[0, 16]"
+            :autoHide="false"
+          >
 
-      {{ head.title }}
-    </th>
+            <font-awesome-icon
+              class="filterIcon"
+              :icon="usersComment[head.name].filter.length ? 'filter' : 'random'"
+              @click="$emit('filterProp', head.name)"
+            />
+
+            <template #popper>
+              <p class="head__dropdown--title">Фильтр по полю {{head.title}} {{ head.name === 'id' ? '(только цифры)' : ''}}</p>
+              <base-input 
+                :type="head.name === 'id' ? 'number' : 'text'"
+                class="tooltip-content"
+                @input="setFilterText"
+                :value="filterText" 
+                placeholder="Tooltip content" 
+              />
+              <font-awesome-icon
+                icon="times"
+                class="closeIcon"
+                v-close-popper
+              />
+            </template>
+          </VDropdown>
+        </div>
+
+      </th>
+    </tr>
   </thead>
 </template>
 
@@ -58,6 +74,13 @@ export default {
     filterText: {
       type: String,
       default: '',
+    },
+    usersComment: {
+      type: Object,
+      default: () => {}
+    },
+    sortProp: {
+      type: String,
     }
   },
   methods: {
@@ -69,22 +92,33 @@ export default {
 </script>
 
 <style>
-  .filterIcon {
-    margin-left: auto;
-    margin-right: 8px;
-  }
-
-  .filterIcon:hover {
-    cursor: pointer;
-  }
-
-  .closeIcon {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-  }
-
-  .closeIcon:hover {
-    cursor: pointer;
-  }
+.head__item {
+  display: flex;
+  justify-content: space-between;
+}
+.head__item--title {
+  cursor: pointer;
+}
+.thead th {
+	font-weight: bold;
+	text-align: left;
+	padding: 10px 15px;
+	background: #e7f0fd;
+}
+.filterIcon {
+  color: #2c3e50;
+  margin-left: auto;
+  margin-right: 8px;
+}
+.filterIcon:hover,  .closeIcon:hover {
+  cursor: pointer;
+}
+.closeIcon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+.head__dropdown--title {
+  margin: 0;
+}
 </style>
