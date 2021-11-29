@@ -5,29 +5,43 @@
       :staticPaging="staticPaging"
       @picked="updatePaging"
     />
-    <table class="table">
-      <cus-table-head 
-        @toggle="toggleSort"
-        @filterProp="setFilterProp"
-        :filterText="usersComment[filterProp].filter"
-        v-model="usersComment[filterProp].filter"
+
+    <div v-if="staticPaging === 'virtual'">
+      <virtual 
+        :comments="comments"
         :usersComment="usersComment"
-        :sortProp="sortProp"
       />
-      <cus-table-body :comments="itemsOnPage"/>
-    </table>
-    <pagination
-      v-if="staticPaging"
-      :currentPage="currentPage"
-      :showNext="filtered.length > endItemOnPage"
-      :filteredLength="filtered.length"
-      @click="onPaginationClick"
-    />
-    <div
-      v-else
-      class="scroll"
-      v-detect-viewport="{callback: this.infGetPage}"
-    />
+    </div>
+
+    <div v-else>
+
+      <table class="table">
+        <cus-table-head 
+          @toggle="toggleSort"
+          @filterProp="setFilterProp"
+          :filterText="usersComment[filterProp].filter"
+          v-model="usersComment[filterProp].filter"
+          :usersComment="usersComment"
+          :sortProp="sortProp"
+        />
+        <cus-table-body :comments="itemsOnPage"/>
+      </table>
+      
+      <pagination
+        v-if="staticPaging === 'pagination'"
+        :currentPage="currentPage"
+        :showNext="filtered.length > endItemOnPage"
+        :filteredLength="filtered.length"
+        @click="onPaginationClick"
+      />
+
+      <div
+        v-else
+        class="scroll"
+        v-detect-viewport="{callback: this.infGetPage}"
+      />
+
+    </div>
   </div>
 </template>
 
@@ -37,6 +51,7 @@ import CusTableHead from './cus-table-head.vue'
 import Radio from './cus-table-radio-box'
 import Pagination from './cus-table-pagination'
 import { orderBy } from 'lodash/collection'
+import Virtual from './virtual-scroll/cus-virtual-table.vue'
 
 export default {
   components: {
@@ -44,6 +59,7 @@ export default {
     CusTableHead,
     Radio,
     Pagination,
+    Virtual,
   },
   name: 'Table',
   data() {
@@ -67,12 +83,12 @@ export default {
       },
       filterProp: 'id',
       sortProp: 'id',
-      staticPaging: true,
+      staticPaging: 'pagination',
     }
   },
   watch: {
     filtered() {
-      if(this.staticPaging) this.currentPage = 1
+      if(this.staticPaging === 'pagination') this.currentPage = 1
     },
     staticPaging() {
       Object.keys(this.usersComment).forEach(key => {
@@ -93,7 +109,7 @@ export default {
       this.init()
     },
     toggleSort(prop) {
-      if(!this.staticPaging) return
+      if(this.staticPaging !== 'pagination') return
       this.currentPage = 1
       if (this.sortProp === prop) {
         this.usersComment[prop].sortDir = this.usersComment[prop].sortDir === 'asc' ? 'desc' : 'asc';
@@ -132,11 +148,10 @@ export default {
       }
     },
     init() {
-      if (this.staticPaging) {
-        this.getComments()
-        return
+      if (this.staticPaging === 'infinite') {
+        return this.getPage(1)
       }
-      this.blockingPromise = this.getPage(1)
+      this.getComments()
     },
   },
   created() {
@@ -144,11 +159,11 @@ export default {
   },
   computed: {
     startItemOnPage() {
-      if(!this.staticPaging) return 0
+      if(this.staticPaging !== 'pagination') return 0
       return (this.currentPage - 1) * this.maxItemsOnPage
     },
     endItemOnPage() {
-      if(!this.staticPaging) return this.comments.length
+      if(this.staticPaging !== 'pagination') return this.comments.length
       return this.currentPage * this.maxItemsOnPage
     },
     itemsOnPage() {

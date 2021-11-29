@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import cusTable from './components/virtual-scroll'
+import cusTable from './components/cus-table'
 
 export default {
   components: { cusTable },

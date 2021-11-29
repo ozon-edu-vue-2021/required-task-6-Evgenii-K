@@ -19,8 +19,7 @@ export default {
       default: () => []
     },
     picked: {
-      type: Boolean,
-      default: true
+      type: String,
     }
   },
   data() {

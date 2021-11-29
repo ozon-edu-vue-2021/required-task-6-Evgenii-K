@@ -102,7 +102,6 @@ export default {
 .thead th {
 	font-weight: bold;
 	text-align: left;
-	padding: 10px 15px;
 	background: #e7f0fd;
 }
 .filterIcon {

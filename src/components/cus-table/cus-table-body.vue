@@ -4,10 +4,24 @@
       v-for="(comment, idx) in comments.slice(0, 20)"
       :key="comment.id ? comment.id : idx"
     >
-      <th scope="row" class="body__id">{{comment.id}}</th>
-      <td>{{maxLengthWord(comment.name, 48)}}</td>
+      <th 
+        scope="row" 
+        class="body__id"
+      >
+        {{comment.id}}
+      </th>
+      <td
+        :title="isMaxCommentLength"
+      >
+        {{maxLengthWord(comment.name, maxCommentLength)}}
+      </td>
       <td>
-        <a class="body__link" :href="`mailto:${comment.email}`">{{maxLengthWord(comment.email, 24)}}</a>
+        <a 
+          class="body__link" 
+          :href="`mailto:${comment.email}`"
+        >
+          {{maxLengthWord(comment.email, maxEmailLength)}}
+        </a>
       </td>
     </tr>
   </tbody>
@@ -16,6 +30,12 @@
 <script>
 export default {
   name: 'Table-body',
+  data() {
+    return {
+      maxCommentLength: 48,
+      maxEmailLength: 24,
+    }
+  },
   props: {
     comments: {
       type: Array,
@@ -27,6 +47,11 @@ export default {
       if (word.length < maxLength) return word
       return word.split('').slice(0, maxLength).join('') + '...'
     }
+  },
+  computed: {
+    isMaxCommentLength() {
+      return this.comment?.name.length > this.maxCommentLength ? this.comment.name : ''
+    },
   }
 }
 </script>

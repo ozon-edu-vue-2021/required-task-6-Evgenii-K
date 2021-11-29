@@ -16,18 +16,22 @@ export default {
   name: 'Table-radio-box',
   props: {
     staticPaging: {
-      type: Boolean,
+      type: String,
     }
   },
   data() {
     return {
       staticPagingTitle: [
         {
-          name: true,
+          name: 'pagination',
           title: 'Пагинация'
         }, {
-          name: false,
+          name: 'infinite',
           title: 'Бесконечный скролл'
+        },
+        { 
+          name: 'virtual',
+          title: 'Виртуальный скролл'
         },
       ],
     }
