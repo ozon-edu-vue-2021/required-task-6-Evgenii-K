@@ -107,7 +107,7 @@ export default {
   font-size: 18px;
   font-weight: 500;
   cursor: pointer;
-  margin: 0px 12px;
+  padding: 0px 12px;
 }
 .pagination__number:hover, .pagination__icon--angle:hover {
   color: #005bff;

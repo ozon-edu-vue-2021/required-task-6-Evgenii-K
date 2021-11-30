@@ -2,8 +2,6 @@ import Vue from 'vue';
 import App from './App.vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
-  faSortAmountUp,
-  faSortAmountDown,
   faSort,
   faSortUp,
   faSortDown,
@@ -24,7 +22,7 @@ import 'v-tooltip/dist/v-tooltip.css'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 
-library.add(faSortAmountUp, faSortAmountDown, faSort, faSortUp, faSortDown, faFilter, faTimes, 
+library.add(faSort, faSortUp, faSortDown, faFilter, faTimes, 
   faAngleDoubleLeft, faAngleDoubleRight, faAngleLeft, faAngleRight, faRandom);
 
 Vue.use(VTooltipPlugin);

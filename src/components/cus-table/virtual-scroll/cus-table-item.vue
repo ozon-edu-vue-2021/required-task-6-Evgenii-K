@@ -6,7 +6,7 @@
       {{comment.id}}
     </div>
     <div 
-      :title="isMaxCommentLength"
+      :title="comment.name"
     >
       {{maxLengthWord(comment.name, maxCommentLength)}}
     </div>
@@ -56,11 +56,11 @@ export default {
   grid-template-columns: 1fr 4.5fr 2.5fr;
 }
 .body__content div {
-	text-align: left;
 	padding: 10px 15px;
   border-bottom: solid 1px #b8b7b7;
 }
 .body__id {
+  text-align: center;
   font-weight: 700;
 }
 .body__link {

@@ -13,6 +13,7 @@
           >
             {{ head.title }}
             <font-awesome-icon
+              v-show="isPagination"
               :icon="head.name === sortProp 
               ? usersComment[head.name].sortDir === 'asc' ? 'sort-down' : 'sort-up'
               : 'sort'"
@@ -25,6 +26,7 @@
           >
 
             <font-awesome-icon
+              v-show="isPagination"
               class="filterIcon"
               :icon="usersComment[head.name].filter.length ? 'filter' : 'random'"
               @click="$emit('filterProp', head.name)"
@@ -81,6 +83,10 @@ export default {
     },
     sortProp: {
       type: String,
+    },
+    staticPaging: {
+      type: String,
+      default: 'pagination'
     }
   },
   methods: {
@@ -88,6 +94,11 @@ export default {
       this.$emit('input', value)
     }
   },
+  computed: {
+    isPagination() {
+      return this.staticPaging === 'pagination'
+    }
+  }
 }
 </script>
 

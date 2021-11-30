@@ -23,6 +23,7 @@
           v-model="usersComment[filterProp].filter"
           :usersComment="usersComment"
           :sortProp="sortProp"
+          :staticPaging="staticPaging"
         />
         <cus-table-body :comments="itemsOnPage"/>
       </table>
@@ -92,6 +93,7 @@ export default {
     },
     staticPaging() {
       Object.keys(this.usersComment).forEach(key => {
+        this.usersComment[key].filter = ''
         this.usersComment[key].sortDir = 'asc'
       })
       this.filterProp = 'id'
@@ -128,28 +130,29 @@ export default {
         console.log(error)
       }
     },
-    async getPage(number) {
+    async getPage() {
       try {
-        const response = await fetch(`https://jsonplaceholder.typicode.com/comments?postId=${number}`);
+        const response = await fetch(`https://jsonplaceholder.typicode.com/comments?_limit=25`);
         this.comments = await response.json();
-        this.currentPage = number;
+        this.currentPage = 5
       } catch (error) {
         console.log(error)
       }
     },
     async infGetPage() {
       try {
-        const response = await fetch(`https://jsonplaceholder.typicode.com/comments?postId=${this.currentPage + 1}`);
-        const newComments = await response.json();
-        this.comments = [...this.comments, ...newComments];
-        this.currentPage++;
+        await this.blockingPromise
+        const response = await fetch(`https://jsonplaceholder.typicode.com/comments?postId=${this.currentPage + 1}`)
+        const newComments = await response.json()
+        this.comments = [...this.comments, ...newComments]
+        this.currentPage++
       } catch (error) {
         console.log(error)
       }
     },
-    init() {
+    async init() {
       if (this.staticPaging === 'infinite') {
-        return this.getPage(1)
+        return this.blockingPromise = this.getPage()
       }
       this.getComments()
     },

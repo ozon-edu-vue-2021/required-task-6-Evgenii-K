@@ -1,7 +1,7 @@
 <template>
   <tbody class="tbody">
     <tr
-      v-for="(comment, idx) in comments.slice(0, 20)"
+      v-for="(comment, idx) in comments"
       :key="comment.id ? comment.id : idx"
     >
       <th 
@@ -11,7 +11,7 @@
         {{comment.id}}
       </th>
       <td
-        :title="isMaxCommentLength"
+        :title="comment.name"
       >
         {{maxLengthWord(comment.name, maxCommentLength)}}
       </td>
