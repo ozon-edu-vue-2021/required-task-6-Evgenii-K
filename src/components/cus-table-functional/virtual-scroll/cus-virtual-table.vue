@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import Item from "./cus-table-item.vue"
-import CusVirtualHead from './cus-virtual-head.vue'
+import Item from "./cus-table-item__fc.vue"
+import CusVirtualHead from './cus-virtual-head__fc.vue'
 
 export default {
   components: {

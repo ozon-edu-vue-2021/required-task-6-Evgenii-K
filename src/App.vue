@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import cusTable from './components/cus-table'
+import cusTable from './components/cus-table-functional'
 
 export default {
   components: { cusTable },

@@ -1,34 +1,19 @@
 <template>
   <tbody class="tbody">
-    <tr
+    <Item
       v-for="(comment, idx) in comments"
       :key="comment.id ? comment.id : idx"
-    >
-      <th 
-        scope="row" 
-        class="body__id"
-      >
-        {{comment.id}}
-      </th>
-      <td
-        :title="isMaxCommentLength"
-      >
-        {{maxLengthWord(comment.name, maxCommentLength)}}
-      </td>
-      <td>
-        <a 
-          class="body__link" 
-          :href="`mailto:${comment.email}`"
-        >
-          {{maxLengthWord(comment.email, maxEmailLength)}}
-        </a>
-      </td>
-    </tr>
+      :comment="comment"
+    />
   </tbody>
 </template>
 
 <script>
+import Item from './cus-table-item__fc.vue'
 export default {
+  components: {
+    Item,
+  },
   name: 'Table-body',
   data() {
     return {
@@ -52,7 +37,7 @@ export default {
     isMaxCommentLength() {
       return this.comment?.name.length > this.maxCommentLength ? this.comment.name : ''
     },
-  }
+  },
 }
 </script>
 
@@ -63,12 +48,5 @@ export default {
 }
 .tbody tr:nth-child(even){
 	background: #eff3f4;
-}
-.body__id {
-  width: 100px;
-}
-.body__link {
-  color: #005bff;
-  text-decoration: none;
 }
 </style>
