@@ -6,12 +6,11 @@
       @picked="updatePaging"
     />
 
-    <div v-if="staticPaging === 'virtual'">
-      <virtual 
-        :comments="comments"
-        :usersComment="usersComment"
-      />
-    </div>
+    <virtual 
+      v-if="staticPaging === 'virtual'"
+      :comments="comments"
+      :usersComment="usersComment"
+    />
 
     <div v-else>
 
