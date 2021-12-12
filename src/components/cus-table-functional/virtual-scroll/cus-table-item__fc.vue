@@ -29,7 +29,7 @@ export default {
   props: {
     comment: {
       type: Object,
-      default: () => {},
+      default: () => ({}),
     }
   },
   maxLengthWord(word, maxLength) {

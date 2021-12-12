@@ -35,7 +35,7 @@ export default {
     },
     usersComment: {
       type: Object,
-      default: () => {}
+      default: () => ({}),
     },
   },
 }

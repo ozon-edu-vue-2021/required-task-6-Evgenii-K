@@ -14,9 +14,7 @@
             {{ head.title }}
             <font-awesome-icon
               v-show="isPagination"
-              :icon="head.name === sortProp 
-              ? usersComment[head.name].sortDir === 'asc' ? 'sort-down' : 'sort-up'
-              : 'sort'"
+              :icon="sortDirIcon(head.name)"
             />
           </div>
 
@@ -79,7 +77,7 @@ export default {
     },
     usersComment: {
       type: Object,
-      default: () => {}
+      default: () => ({}),
     },
     sortProp: {
       type: String,
@@ -92,6 +90,11 @@ export default {
   methods: {
     setFilterText(value) {
       this.$emit('input', value)
+    },
+    sortDirIcon(name) {
+      return name === this.sortProp 
+              ? this.usersComment[name].sortDir === 'asc' ? 'sort-down' : 'sort-up'
+              : 'sort'
     }
   },
   computed: {

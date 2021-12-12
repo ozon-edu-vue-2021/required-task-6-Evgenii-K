@@ -30,7 +30,7 @@ export default {
   methods: {
     maxLengthWord(word, maxLength) {
       if (word.length < maxLength) return word
-      return word.split('').slice(0, maxLength).join('') + '...'
+      return word.substring(0, maxLength) + '...'
     }
   },
   computed: {
