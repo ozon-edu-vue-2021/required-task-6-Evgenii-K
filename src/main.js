@@ -1,0 +1,39 @@
+import Vue from 'vue';
+import App from './App.vue';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import {
+  faSort,
+  faSortUp,
+  faSortDown,
+  faFilter,
+  faTimes,
+  faAngleDoubleLeft,
+  faAngleDoubleRight,
+  faAngleLeft,
+  faAngleRight,
+  faRandom,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import VTooltipPlugin from 'v-tooltip'
+import { Directive } from '@/directives/detect-viewport';
+import VueVirtualScroller from 'vue-virtual-scroller'
+
+import 'v-tooltip/dist/v-tooltip.css'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+
+
+library.add(faSort, faSortUp, faSortDown, faFilter, faTimes, 
+  faAngleDoubleLeft, faAngleDoubleRight, faAngleLeft, faAngleRight, faRandom);
+
+Vue.use(VTooltipPlugin);
+Vue.use(VueVirtualScroller)
+
+Vue.component('font-awesome-icon', FontAwesomeIcon);
+Vue.directive('detect-viewport', Directive);
+
+
+Vue.config.productionTip = false;
+
+new Vue({
+  render: h => h(App)
+}).$mount('#app');
